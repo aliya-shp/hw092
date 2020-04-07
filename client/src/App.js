@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component, Fragment} from 'react';
+import Toolbar from "./components/UI/Toolbar/Toolbar";
+import {Container} from "reactstrap";
+import Routes from "./Routes";
+import {ToastContainer} from "react-toastify";
+import {withRouter} from "react-router-dom";
+import {connect} from "react-redux";
+import {logoutUser} from "./store/actions/usersActions";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  render() {
+    return (
+        <Fragment>
+          <ToastContainer autoClose={3000} />
+          <header>
+            <Toolbar
+                user={this.props.user}
+                logout={this.props.logoutUser}
+            />
+          </header>
+          <Container style={{marginTop: '20px'}}>
+            <Routes user={this.props.user}/>
+          </Container>
+        </Fragment>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  user: state.users.user,
+});
+
+const mapDispatchToProps = dispatch => ({
+  logoutUser: () => dispatch(logoutUser()),
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
